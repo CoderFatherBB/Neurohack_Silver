@@ -3,10 +3,10 @@
 ## Offline Text Summarization Tool for Handwritten and Digital Texts
 
 ### Team Sonic Coder
-- Bhavin Baldota
-- Aditya Chavan
-- Saumya Shah
-- Sharvari Korde
+- Bhavin Baldota - [LinkedIn - Bhavin Baldota](https://www.linkedin.com/in/bhavin-baldota-103553234)
+- Aditya Chavan - [LinkedIn - Aditya Chavan](https://www.linkedin.com/in/aditya-chavan-5117aa268?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+- Saumya Shah - [LinkedIn - Saumya Shah](https://www.linkedin.com/in/saumya-shah-9b2579273?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+- Sharvari Korde - [LinkedIn - Sharvari Korde](https://www.linkedin.com/in/sharvari-korde-85b993268?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
 ## Project Overview
 
@@ -83,4 +83,4 @@ We thank L&T for organizing the NEUROHACK challenge and providing this opportuni
 
 ---
 
-For more information about the L&T NEUROHACK challenge, visit [L&T NEUROHACK Official Website](https://www.larsentoubro.com/).
+For more information about the L&T NEUROHACK challenge, visit [L&T NEUROHACK Official Website](https://unstop.com/competitions/lt-neurohack-coep-mindspark-1177482?lb=NNlJdAID&fbclid=PAZXh0bgNhZW0CMTEAAabGJTa5pNxRyIzkXewlq3kVGnqpax2xh61YLwJ1QxBnCeNF_kHaOo0QtyI_aem_pgVH7177cRA2dyjworV-wQ).
