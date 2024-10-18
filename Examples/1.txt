@@ -1,0 +1,11 @@
+Co pater hecukech ure and Organi aotion
+
+Wedlen Assignee
+
+\ Discuss aswuchronous doto. transfer melrods.
+
+Rsuucdhronous dato trancfer methods usually signal the start and end of 4he dota
+Ling froncwitled os opposed 4o \ynchronous omes. In a sense they are boll
+
+Syncliow sed ont by a clock amd another by signals like slat avd sop. While
+Sung, BBync methods ite two bodies involved whe communication do not need o
