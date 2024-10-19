@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L&T NEUROHACK Text Summarization Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='background.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        header, footer {
+            background: rgba(211, 211, 211, 0.3);
+        }
+
+        .custom-file-upload {
+            border: 2px dashed #cbd5e0;
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .custom-file-upload:hover {
+            border-color: #ed8936;
+        }
+
+        #output-field {
+            white-space: pre-wrap;
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #2d3748;
+            background-color: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        #ocr-text {
+            white-space: pre-wrap;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #4a5568;
+            background-color: #fff;
+            padding: 1.25rem;
+        }
+
+        .loading {
+            position: relative;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2rem;
+            height: 2rem;
+            margin: -1rem 0 0 -1rem;
+            border: 3px solid #f6ad55;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #e53e3e;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #fff5f5;
+            border: 1px solid #fc8181;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .success {
+            color: #38a169;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #f0fff4;
+            border: 1px solid #9ae6b4;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .editable-area {
+            min-height: 150px;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background-color: white;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .editable-area:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+
+        #context-box {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-hover {
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .button-hover:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Enhanced scrollbar styling */
+        #output-field::-webkit-scrollbar,
+        #ocr-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        #output-field::-webkit-scrollbar-track,
+        #ocr-text::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #output-field::-webkit-scrollbar-thumb,
+        #ocr-text::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        #output-field::-webkit-scrollbar-thumb:hover,
+        #ocr-text::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="py-4 shadow-md">
+        <h1 class="text-3xl font-bold text-white text-center">
+            L&T NEUROHACK Text Summarization Tool
+        </h1>
+        <img src="{{ url_for('static', filename='LNT.png') }}" alt="Header Logo" class="absolute top-2 right-2 w-12 h-12 object-contain">
+    </header>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-8">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl">
+            <div class="mb-6">
+                <label for="file-input" class="block text-sm font-medium text-gray-700 mb-2">Upload Document</label>
+                <div class="relative">
+                    <input type="file" id="file-input" class="hidden" onchange="handleFileUpload(this)" accept=".txt,.pdf,.png,.jpg,.jpeg,.gif,.docx,.xlsx,.json,.xml">
+                    <label for="file-input" class="custom-file-upload rounded-md py-3 text-gray-600 hover:text-orange-600 transition duration-300">
+                        <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <span id="file-name">Choose a file or drag it here</span>
+                    </label>
+                    <p class="mt-2 text-sm text-gray-500">Supported formats: TXT, PDF, PNG, JPG, JPEG, GIF, DOCX, XLSX, JSON, XML</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="context-box" class="block text-sm font-medium text-gray-700 mb-2">Context Information (Optional)</label>
+                <textarea id="context-box" rows="4" class="shadow-sm focus:ring-orange-500 focus:border-orange-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md resize-none" placeholder="Enter any additional context that might help with summarization..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="generateSummary()" id="generate-btn" class="w-full py-3 px-4 text-center text-white bg-blue-500 hover:bg-blue-600 rounded-md transition duration-300">
+                    Generate Summary
+                </button>
+                <button onclick="toggleOCR()" id="toggle-btn" class="w-full py-3 px-4 text-center text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition duration-300">
+                    Toggle OCR Text
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Summary Output</label>
+                <div id="output-field" class="bg-gray-50 border border-gray-300 rounded-md p-4 min-h-[12rem] max-h-[24rem] overflow-auto text-sm"></div>
+            </div>
+
+            <div id="ocr-result" class="mt-6 hidden">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-sm font-medium text-gray-700">OCR Result (Editable)</label>
+                    <button onclick="updateOCRText()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300">
+                        Update Text
+                    </button>
+                </div>
+                <div id="ocr-text" class="editable-area" contenteditable="true"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-4 mt-8 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="text-lg font-semibold text-white mb-2">Created by:</p>
+            <p class="mb-4">
+                <a href="https://www.linkedin.com/in/aditya-chavan-5117aa268/" target="_blank" class="text-white hover:text-blue-800">Aditya Chavan</a> |
+                <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/" target="_blank" class="text-white hover:text-blue-800">Bhavin Baldota</a> |
+                <a href="https://www.linkedin.com/in/saumya-shah-9b2579273/" target="_blank" class="text-white hover:text-blue-800">Saumya Shah</a> |
+                <a href="https://www.linkedin.com/in/sharvari-korde-85b993268/" target="_blank" class="text-white hover:text-blue-800">Sharvari Korde</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let ocrText = '';
+
+        function setLoading(isLoading) {
+            const generateBtn = document.getElementById('generate-btn');
+            const outputField = document.getElementById('output-field');
+            
+            if (isLoading) {
+                generateBtn.disabled = true;
+                outputField.classList.add('loading');
+            } else {
+                generateBtn.disabled = false;
+                outputField.classList.remove('loading');
+            }
+        }
+
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name || 'Choose a file or drag it here';
+            document.getElementById('file-name').textContent = fileName;
+        }
+
+        function handleFileUpload(input) {
+            updateFileName(input);
+            processFile();
+        }
+
+        function updateOCRText() {
+            const editedText = document.getElementById('ocr-text').innerText;
+            ocrText = editedText;
+            document.getElementById('output-field').innerHTML = '<div class="success">OCR text updated. Click "Generate Summary" to analyze the updated text.</div>';
+        }
+
+        function processFile() {
+            const formData = new FormData();
+            const fileInput = document.getElementById('file-input');
+            const outputField = document.getElementById('output-field');
+
+            if (fileInput.files.length === 0) {
+                outputField.innerHTML = '<div class="error">Please select a file to upload.</div>';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            setLoading(true);
+            formData.append('file', file);
+
+            fetch('/process', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    outputField.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                } else {
+                    if (data.ocr_text) {
+                        ocrText = data.ocr_text;
+                        document.getElementById('ocr-text').innerText = ocrText;
+                    } else {
+                        ocrText = data.extracted_text || "No text could be extracted from the file.";
+                        document.getElementById('ocr-text').innerText = ocrText;
+                    }
+                    outputField.innerHTML = '<div class="success">File processed successfully. Click "Generate Summary" to analyze the text.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                outputField.innerHTML = '<div class="error">An error occurred while processing the file.</div>';
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        }
+
+        function generateSummary() {
+            if (!ocrText) {
+                document.getElementById('output-field').innerHTML = '<div class="error">Please upload and process a file first.</div>';
+                return;
+            }
+
+            const contextBox = document.getElementById('context-box').value;
+            setLoading(true);
+            
+            fetch('/summarize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ocr_text: ocrText,
+                    context: contextBox
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('output-field').innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                } else {
+                    document.getElementById('output-field').textContent = data.summary;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('output-field').innerHTML = '<div class="error">An error occurred while generating the summary.</div>';
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        }
+
+        function toggleOCR() {
+            const ocrResult = document.getElementById('ocr-result');
+            if (ocrText) {
+                ocrResult.classList.toggle('hidden');
+            } else {
+                document.getElementById('output-field').innerHTML = '<div class="error">No OCR result available. Please upload and process a file first.</div>';
+            }
+        }
+
+        // Add drag and drop support
+        const dropZone = document.querySelector('.custom-file-upload');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('border-orange-500');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('border-orange-500');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            const fileInput = document.getElementById('file-input');
+            
+            fileInput.files = files;
+            handleFileUpload(fileInput);
+        }
+    </script>
+</body>
+</html>

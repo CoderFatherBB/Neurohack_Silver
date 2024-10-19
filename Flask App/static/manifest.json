@@ -1,0 +1,20 @@
+{
+    "name": "Text Summarization Tool",
+    "short_name": "Summarization",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFF5E6",
+    "theme_color": "#FF9F1C",
+    "icons": [
+        {
+            "src": "static/LNT.png",  // Add your icon file path
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "static/background.jpg",  // Add your icon file path
+            "sizes": "192x192",
+            "type": "image/jpg"
+        }
+    ]
+}

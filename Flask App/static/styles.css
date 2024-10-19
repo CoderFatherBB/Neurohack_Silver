@@ -1,0 +1,60 @@
+body {
+    background-image: url("{{ url_for('static', filename='background.jpg') }}"); /* Set your blue-themed background image */
+    background-size: cover; /* Cover the entire screen */
+    background-repeat: no-repeat; /* Prevent repetition */
+    background-position: center; /* Center the image */
+}
+
+header {
+    background: rgba(211, 211, 211, 0.7); /* Light gray color with transparency */
+}
+
+footer {
+    background: rgba(211, 211, 211, 0.7); /* Light gray color with transparency */
+}
+
+.custom-file-upload {
+    border: 2px dashed #393267;
+    display: inline-block;
+    padding: 1rem;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    border-radius: 0.375rem; /* This matches Tailwind's rounded-md */
+    transition: all 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    border-color: #9fafd7;
+    background-color: #e9e7f3;
+}
+
+#file-input {
+    display: none;
+}
+
+/* Additional styles to enhance the look */
+.custom-file-upload svg {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.5rem;
+}
+
+#context-box:focus, #output-field:focus {
+    border-color: #FF9F1C;
+    box-shadow: 0 0 0 3px rgba(255, 159, 28, 0.2);
+}
+
+button {
+    color: #fff; /* Ensures the text is white */
+    background-color: #6f88c3; /* Change button background color */
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #56CCF2; /* Change hover color */
+}
+
+/* Add any additional custom styles here */
