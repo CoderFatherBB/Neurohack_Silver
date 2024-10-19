@@ -8,6 +8,13 @@
 - Saumya Shah - [LinkedIn - Saumya Shah](https://www.linkedin.com/in/saumya-shah-9b2579273?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 - Sharvari Korde - [LinkedIn - Sharvari Korde](https://www.linkedin.com/in/sharvari-korde-85b993268?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
+## Running Flask Application 
+- Using the 'Flask App' Folder just run 'app.py' file which contents complete end to end solution with UI and Offline Funtionality
+- Output : ![alt text](<WhatsApp Image 2024-10-19 at 15.32.09_38a7af06.jpg>)
+- Example Runs : ![alt text](<WhatsApp Image 2024-10-19 at 15.27.14_57278fb0.jpg>) ![alt text](<WhatsApp Image 2024-10-19 at 15.27.15_3802d5f3.jpg>)
+
+
+
 ## Project Overview
 
 This project addresses the L&T NEUROHACK Silver Problem Statement by developing an innovative text summarization tool capable of efficiently processing and summarizing both handwritten and digital texts while operating entirely offline. Our solution caters to privacy-sensitive documents and remote areas lacking stable internet connectivity.
