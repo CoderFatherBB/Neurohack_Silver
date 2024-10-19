@@ -1,0 +1,2 @@
+Hand Written Dataset - https://www.kaggle.com/datasets/dhruvildave/english-handwritten-characters-dataset
+Google Digital Fonts - https://github.com/google/fonts/archive/main.zip 
